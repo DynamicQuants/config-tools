@@ -1,0 +1,50 @@
+{
+  "name": "@dynamic-quants/config-tools",
+  "version": "1.0.0",
+  "description": "Configurations for tools used by the Dynamic Quants Team",
+  "author": "Dynamic Quants",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DynamicQuants/config-tools.git"
+  },
+  "files": [
+    "eslint/*",
+    "jest/*",
+    "typescript/*",
+    "prettier.{js,mjs,d.mts,d.ts}",
+    "tailwind.{js,mjs,d.mts,d.ts}",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "copy-files": "cp -a ./src/typescript dist/ && cp package.json dist/ && cp README.md dist/ && cp LICENSE dist/",
+    "build": "tsup --onSuccess \"pnpm run copy-files\""
+  },
+  "devDependencies": {
+    "@jest/types": "^29.6.3",
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "@vercel/style-guide": "^6.0.0",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "jest": "^29.7.0",
+    "next": "^15.0.3",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.14",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  },
+  "packageManager": "pnpm@9.11.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
