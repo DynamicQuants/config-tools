@@ -1,4 +1,4 @@
-# Dynamic Quants Tools Configurations
+# Dynamic Quants Configurations
 
 This repository contains the configurations for Typescript/JavaScript development tools used by the Dynamic Quants Team.
 
@@ -11,7 +11,7 @@ The goal of this repository is to provide a set of configurations that can be us
 To use the configurations in your project, you can install the package using pnpm:
 
 ```bash
-pnpm install @dynamic-quants/tools-configs@latest
+pnpm install @dynamic-quants/config-tools@latest
 ```
 
 ## ESLint
@@ -21,9 +21,16 @@ To use the ESLint configurations, you can add the following to your `.eslintrc.j
 ```javascript
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: ['@dynamic-quants/eslint-config/{base|nestjs|nextjs|react}'],
+  extends: ['@dynamic-quants/config-tools/eslint-config/{base|nestjs|nextjs|react}'],
 };
 ```
+
+**Available ESLint Configurations**
+
+- `base`: Base ESLint configuration for all projects.
+- `nestjs`: ESLint configuration for NestJS projects.
+- `nextjs`: ESLint configuration for NextJS projects.
+- `react`: ESLint configuration for React projects.
 
 ## Jest
 
@@ -31,27 +38,41 @@ To use the Jest configurations, you can add the following to your `jest.config.j
 
 ```javascript
 module.exports = {
-  ...require('@dynamic-quants/tools-configs/jest/{base|nestjs|nextjs}'),
+  ...require('@dynamic-quants/config-tools/jest/{base|nestjs|nextjs}'),
 };
 ```
 
 Or you can extend the configurations in your `jest.config.ts` file:
 
 ```typescript
-import config from '@dynamic-quants/tools-configs/jest/{base|nestjs|nextjs}';
+import config from '@dynamic-quants/config-tools/jest/{base|nestjs|nextjs}';
 
 export default config;
 ```
 
-## TypeScript
+**Available Jest Configurations**
+
+- `base`: Base Jest configuration for all projects.
+- `nestjs`: Jest configuration for NestJS projects.
+- `nextjs`: Jest configuration for NextJS projects.
+
+## TypeScript (TSConfig)
 
 To use the TypeScript configurations, you can add the following to your `tsconfig.json` file:
 
 ```json
 {
-  "extends": "@dynamic-quants/tools-configs/typescript/{base|nestjs-library|nestjs|nextjs|react-library}.json"
+  "extends": "@dynamic-quants/config-tools/typescript/{base|nestjs-library|nestjs|nextjs|react-library}.json"
 }
 ```
+
+**Available TypeScript Configurations**
+
+- `base`: Base TypeScript configuration for all projects.
+- `nestjs-library`: TypeScript configuration for NestJS libraries.
+- `nestjs`: TypeScript configuration for NestJS projects.
+- `nextjs`: TypeScript configuration for NextJS projects.
+- `react-library`: TypeScript configuration for React libraries.
 
 ## Prettier
 
@@ -59,7 +80,7 @@ To use the Prettier configurations, you can add the following to your `.prettier
 
 ```javascript
 /** @type {import("prettier").Config} */
-module.exports = require('@dynamic-quants/tools-configs/prettier');
+module.exports = require('@dynamic-quants/config-tools/prettier');
 ```
 
 ## Tailwind
@@ -69,7 +90,7 @@ To use the Tailwind configurations, you can add the following to your `tailwind.
 ```typescript
 import type { Config } from 'tailwindcss';
 
-import tailwindConfig from '@dynamic-quants/tools-configs/tailwind';
+import tailwindConfig from '@dynamic-quants/config-tools/tailwind';
 
 const config: Config = {
   presets: [tailwindConfig],
