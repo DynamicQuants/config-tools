@@ -14,7 +14,7 @@
     "typescript/*",
     "prettier.{js,mjs,d.mts,d.ts}",
     "tailwind.{js,mjs,d.mts,d.ts}",
-    "playwright.ts",
+    "playwright.{js,mjs,d.mts,d.ts}",
     "package.json",
     "README.md",
     "LICENSE"
@@ -28,6 +28,7 @@
     "@jest/types": "^29.6.3",
     "@playwright/test": "^1.49.0",
     "@types/jest": "^29.5.14",
+    "@types/node": "^22.9.0",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
     "@vercel/style-guide": "^6.0.0",

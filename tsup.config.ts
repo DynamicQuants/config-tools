@@ -5,7 +5,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['jest', 'prettier', 'next'],
+  external: ['jest', 'prettier', 'next', 'playwright'],
   format: ['esm', 'cjs'],
   dts: true,
 });
