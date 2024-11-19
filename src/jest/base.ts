@@ -1,4 +1,5 @@
 import type { Config } from 'jest';
+import path from 'path';
 
 /**
  * This is the base config for all jest tests.
@@ -12,5 +13,5 @@ export default {
   testEnvironment: 'jsdom',
   collectCoverageFrom: ['src/**/*.ts'],
   coveragePathIgnorePatterns: ['index.ts', '.*stories.tsx'],
-  snapshotResolver: './snapshotResolver.js',
+  snapshotResolver: path.resolve(__dirname, './snapshotResolver.js'),
 } as const satisfies Config;
