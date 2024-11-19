@@ -11,4 +11,6 @@ export default {
   moduleFileExtensions: ['js', 'ts', 'json', 'jsx', 'tsx'],
   testEnvironment: 'jsdom',
   collectCoverageFrom: ['src/**/*.ts'],
+  coveragePathIgnorePatterns: ['index.ts', '.*stories.tsx'],
+  snapshotResolver: './snapshotResolver.js',
 } as const satisfies Config;
