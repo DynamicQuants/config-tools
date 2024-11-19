@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
+    "@playwright/test": "^1.49.0",
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
