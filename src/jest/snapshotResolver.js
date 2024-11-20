@@ -2,11 +2,8 @@
  * Custom snapshot resolver for jest.
  */
 module.exports = {
-  testPathForConsistencyCheck: 'some/example.spec.js',
-
-  resolveSnapshotPath: (testPath, snapshotExtension) =>
-    testPath.replace(/\.spec\.([tj]sx?)/, `${snapshotExtension}.$1`),
-
+  testPathForConsistencyCheck: 'some.test.js',
+  resolveSnapshotPath: (testPath, snapshotExtension) => testPath + snapshotExtension,
   resolveTestPath: (snapshotFilePath, snapshotExtension) =>
-    snapshotFilePath.replace(snapshotExtension, '.spec'),
+    snapshotFilePath.replace(snapshotExtension, ''),
 };

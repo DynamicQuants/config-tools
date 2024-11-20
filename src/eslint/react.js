@@ -1,5 +1,5 @@
-import process from 'node:process';
 import { resolve } from 'node:path';
+import process from 'node:process';
 
 const project = resolve(process.cwd(), 'tsconfig.json');
 

@@ -1,4 +1,5 @@
 import type { Config } from 'jest';
+
 import jestBaseConfig from './base';
 
 export default {

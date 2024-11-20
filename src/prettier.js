@@ -9,4 +9,11 @@ module.exports = {
   bracketSameLine: false,
   arrowParens: 'always',
   useTabs: false,
+
+  // Sort imports using trivago/prettier-plugin-sort-imports.
+  // Ref: https://github.com/trivago/prettier-plugin-sort-imports
+  plugins: ['@trivago/prettier-plugin-sort-imports'],
+  importOrder: ['^[./]'],
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
 };
