@@ -1,5 +1,6 @@
 import type { Config } from 'jest';
 import nextJest from 'next/jest';
+import path from 'path';
 
 import jestBaseConfig from './base';
 
@@ -9,4 +10,14 @@ const createJestConfig = nextJest({
   dir: './',
 });
 
-export default createJestConfig(jestBaseConfig) as Config;
+// Add any custom config to be passed to Jest
+const customJestConfig = {
+  ...jestBaseConfig,
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  testEnvironment: 'jsdom',
+  coveragePathIgnorePatterns: ['index.ts', '.*stories.tsx'],
+  snapshotResolver: path.resolve(__dirname, './snapshotResolver.js'),
+  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx'],
+};
+
+export default createJestConfig(customJestConfig) as Config;

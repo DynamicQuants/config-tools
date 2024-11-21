@@ -5,9 +5,10 @@ import jestBaseConfig from './base';
 export default {
   ...jestBaseConfig,
   testEnvironment: 'node',
-  testRegex: '.spec.ts$',
+  testRegex: ['.spec.ts$', '.spec.tsx$'],
   rootDir: '.',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
+  collectCoverageFrom: ['src/**/*.ts'],
 } as Config;

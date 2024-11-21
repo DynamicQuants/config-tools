@@ -12,7 +12,10 @@ module.exports = {
 
   // Sort imports using trivago/prettier-plugin-sort-imports.
   // Ref: https://github.com/trivago/prettier-plugin-sort-imports
-  plugins: ['@trivago/prettier-plugin-sort-imports'],
+  plugins: [
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-multiline-arrays',
+  ],
   importOrder: ['^[./]'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
