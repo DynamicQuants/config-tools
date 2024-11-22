@@ -2,11 +2,24 @@
 
 This repository contains the configurations for Typescript/JavaScript development tools used by the Dynamic Quants Team.
 
-## Motivation
+## 💡 Motivation
 
 The goal of this repository is to provide a set of configurations that can be used in any project. This saves us from having to copy and paste the same configurations across projects and allows us to manage them in one place 😎.
 
-## How to use
+## 🚀 Features
+
+This package contains the following configurations focused on applications and libraries on top of NextJS, React, NestJS, and Node.js technologies:
+
+- ESLint: A linting tool for JavaScript.
+- Jest: A testing framework for JavaScript.
+- TypeScript: A programming language for JavaScript.
+- Playwright: A framework for browser automation and testing.
+- Prettier: A code formatter for JavaScript.
+- Tailwind: A utility-first CSS framework for rapidly building custom designs.
+
+You can visit this [Repository](https://github.com/DynamicQuants/moonrepo-templates) to see how to use the configurations in a project.
+
+## 🔌 Installation
 
 To use the configurations in your project, you can install the package using pnpm:
 
@@ -14,14 +27,21 @@ To use the configurations in your project, you can install the package using pnp
 pnpm install @dynamic-quants/config-tools@latest
 ```
 
-## ESLint
+## 📚 Usage
+
+The usage is very simple and straightforward. You just need to extend the configurations in your project.
+
+### 🚫 ESLint
 
 To use the ESLint configurations, you can add the following to your `.eslintrc.js` file:
 
 ```javascript
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: ['@dynamic-quants/config-tools/eslint-config/{base|nestjs|nextjs|react}'],
+  extends: [
+    require.resolve('@dynamic-quants/config-tools/eslint-config/{base|nestjs|nextjs|react}'),
+  ],
+  // Rest of the configuration...
 };
 ```
 
@@ -32,7 +52,7 @@ module.exports = {
 - `nextjs`: ESLint configuration for NextJS projects.
 - `react`: ESLint configuration for React projects.
 
-## Jest
+### 🧪 Jest
 
 To use the Jest configurations, you can add the following to your `jest.config.js` file:
 
@@ -56,7 +76,7 @@ export default config;
 - `nestjs`: Jest configuration for NestJS projects.
 - `nextjs`: Jest configuration for NextJS projects.
 
-## TypeScript (TSConfig)
+### 📝 TypeScript (TSConfig)
 
 To use the TypeScript configurations, you can add the following to your `tsconfig.json` file:
 
@@ -74,7 +94,17 @@ To use the TypeScript configurations, you can add the following to your `tsconfi
 - `nextjs`: TypeScript configuration for NextJS projects.
 - `react-library`: TypeScript configuration for React libraries.
 
-## Prettier
+### 🎥 Playwright
+
+To use the Playwright configurations, you can add the following to your `playwright.config.ts` file:
+
+```typescript
+import config from '@dynamic-quants/config-tools/playwright';
+
+export default config;
+```
+
+### 🎨 Prettier
 
 To use the Prettier configurations, you can add the following to your `.prettierrc.js` file:
 
@@ -83,14 +113,13 @@ To use the Prettier configurations, you can add the following to your `.prettier
 module.exports = require('@dynamic-quants/config-tools/prettier');
 ```
 
-## Tailwind
+### 🎨 Tailwind
 
 To use the Tailwind configurations, you can add the following to your `tailwind.config.ts` file:
 
 ```typescript
-import type { Config } from 'tailwindcss';
-
 import tailwindConfig from '@dynamic-quants/config-tools/tailwind';
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   presets: [tailwindConfig],
@@ -100,4 +129,31 @@ const config: Config = {
 };
 
 export default config;
+```
+
+## 📦 Dependencies
+
+To get the best experience, you need to install the following peer dependencies in your project depending on the technology you are using:
+
+### NextJS
+
+```bash
+pnpm add -D @dynamic-quants/config-tools@^1.0.6 \
+  @next/eslint-plugin-next@14 \
+  @playwright/test@1.49.0 \
+  @testing-library/jest-dom@^6.6.3 \
+  @testing-library/react@^16.0.1 \
+  @trivago/prettier-plugin-sort-imports@4.3.0 \
+  @types/jest@^29.5.14 \
+  @types/react@18.2.45 \
+  @types/react-dom@18.3.1 \
+  @vercel/style-guide@^6.0.0 \
+  eslint@8.57.1 \
+  eslint-plugin-only-warn@^1.1.0 \
+  jest@29.7.0 \
+  jest-environment-jsdom@^29.7.0 \
+  postcss@^8.4.49 \
+  prettier-plugin-multiline-arrays@^3.0.6 \
+  tailwindcss@^3.4.15 \
+  typescript@5.5.4
 ```

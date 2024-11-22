@@ -1,8 +1,6 @@
 import { resolve } from 'node:path';
 import process from 'node:process';
 
-import base from './base.js';
-
 const project = resolve(process.cwd(), 'tsconfig.json');
 
 /** @type {import("eslint").Linter.Config} */
@@ -17,6 +15,7 @@ module.exports = {
       '@vercel/style-guide/eslint/next',
     ].map((path) => require.resolve(path)),
   ],
+  plugins: ['only-warn'],
   globals: {
     React: true,
     JSX: true,
@@ -26,7 +25,6 @@ module.exports = {
     browser: true,
     jest: true,
   },
-  plugins: ['only-warn'],
   settings: {
     'import/resolver': {
       typescript: {
@@ -38,7 +36,13 @@ module.exports = {
     },
   },
   ignorePatterns: [
-    ...base.ignorePatterns,
+    '*.ts',
+    '*.setup.js',
+    '*.config.js',
+    '.eslintrc.js',
+    'node_modules/**',
+    'dist/**',
+    'build/**',
     'coverage/**/*',
     'playwright/**/*',
     '.next/**/*',

@@ -19,4 +19,9 @@ module.exports = {
   importOrder: ['^[./]'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
+
+  // To avoid the error: SyntaxError: This experimental syntax requires enabling one of the
+  // following parser plugin(s): "decorators", "decorators-legacy".
+  // Ref: https://github.com/trivago/prettier-plugin-sort-imports/issues/120#issuecomment-1873414061
+  importOrderParserPlugins: ['typescript', 'jsx', 'decorators'],
 };
