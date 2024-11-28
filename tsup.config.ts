@@ -1,11 +1,14 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/**/*.{ts,js}'],
+  entry: ['src/index.mjs', 'src/postinstall.ts'],
   splitting: false,
-  sourcemap: true,
+  sourcemap: false,
   clean: true,
-  external: ['jest', 'prettier', 'next', 'playwright'],
   format: ['esm', 'cjs'],
   dts: true,
+  tsconfig: './tsconfig.json',
+  shims: true,
+  onSuccess: 'pnpm run copy-files',
+  minify: true,
 });

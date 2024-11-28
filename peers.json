@@ -1,0 +1,16 @@
+{
+  "nextjs": {
+    "@playwright/test": "^1.49.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.10.0",
+    "@types/react-dom": "18.3.1",
+    "@types/react": "18.3.12",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "5.6.3"
+  }
+}

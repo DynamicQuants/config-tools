@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "rootDir": "${configDir}",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": "${configDir}"
+  },
+  "exclude": ["node_modules", "tmp"]
+}
