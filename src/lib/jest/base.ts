@@ -1,11 +1,13 @@
 import nxPreset from '@nx/jest/preset';
 import type { Config } from 'jest';
 
-export default {
+const base: Config = {
+  // Ref: https://github.com/nrwl/nx/blob/master/packages/jest/preset/jest-preset.ts
   ...nxPreset,
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  moduleFileExtensions: ['js', 'ts', 'json', 'jsx', 'tsx'],
   coverageReporters: ['text', 'html'],
-} as Config;
+};
+
+export default base;

@@ -1,4 +1,5 @@
 {
+  "extends": "./base.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "target": "ES2017",

@@ -1,18 +1,19 @@
 import type { Config } from 'jest';
 
-import jestBaseConfig from './base';
+import base from './base';
 
-export default {
-  ...jestBaseConfig,
+const config: Config = {
+  ...base,
   testEnvironment: 'node',
-  testRegex: ['.*\\.spec\\.ts$'],
   rootDir: '.',
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   collectCoverageFrom: ['src/**/*.ts'],
-  moduleFileExtensions: ['ts', 'js', 'json'],
+  moduleFileExtensions: ['ts', 'js', 'html'],
 
   // This files commonly have no meaningful coverage.
   coveragePathIgnorePatterns: ['index.ts', 'main.ts', '.*.module.ts'],
-} as Config;
+};
+
+export default config;
