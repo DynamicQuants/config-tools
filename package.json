@@ -1,6 +1,6 @@
 {
   "name": "@dynamic-quants/config-tools",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Configurations for tools used by the Dynamic Quants Team",
   "author": "Dynamic Quants",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
-    "copy-files": "cp -a ./src/lib/typescript peers.json package.json README.md LICENSE dist/",
+    "copy-files": "cp -a ./src/lib/typescript ./src/lib/jest/snapshotResolver.js ./peers.json ./package.json ./README.md ./LICENSE ./dist/",
     "build": "tsup",
     "postinstall": "node ./postinstall.mjs"
   },
