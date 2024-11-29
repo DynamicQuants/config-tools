@@ -1,6 +1,6 @@
 {
   "name": "@dynamic-quants/config-tools",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Configurations for tools used by the Dynamic Quants Team",
   "author": "Dynamic Quants",
   "license": "MIT",
@@ -10,6 +10,11 @@
   },
   "main": "./index.js",
   "types": "./index.d.ts",
+  "exports": {
+    ".": "./index.js",
+    "./prettier.mjs": "./lib/prettier.mjs",
+    "./typescript/*.json": "./typescript/*.json"
+  },
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
@@ -71,5 +76,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "prettier": "./src/prettier.mjs"
+  "prettier": "./src/lib/prettier.mjs"
 }

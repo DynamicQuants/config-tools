@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.mjs', 'src/postinstall.ts'],
+  entry: ['src/index.mjs', 'src/postinstall.ts', 'src/lib/prettier.mjs'],
   splitting: false,
   sourcemap: false,
   clean: true,
