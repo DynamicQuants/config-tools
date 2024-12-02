@@ -20,3 +20,12 @@ export type CommandTarget = (typeof CommandTarget)[keyof typeof CommandTarget];
  * The package manager.
  */
 export type PackageManager = 'yarn' | 'pnpm' | 'npm';
+
+/**
+ * A monorepo project target.
+ */
+export type MonorepoTargets = {
+  name: string;
+  path: string;
+  target: CommandTarget;
+};

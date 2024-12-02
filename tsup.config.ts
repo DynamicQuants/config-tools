@@ -10,5 +10,4 @@ export default defineConfig({
   tsconfig: './tsconfig.json',
   shims: true,
   onSuccess: 'pnpm run copy-files',
-  minify: true,
 });
