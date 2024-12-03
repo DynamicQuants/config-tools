@@ -170,7 +170,7 @@ export function installPeers(target: CommandTarget, path = rootPath, filter = ''
 
   const packageManager = detectPackageManager();
   const deps = Object.entries(peerDependencies).map(([name, version]) => `${name}@${version}`);
-  const command = `${packageManager} ${filterCommand} add -D --ignore-scripts ${deps.join(' ')}`;
+  const command = `${packageManager} add -D ${filterCommand} --ignore-scripts ${deps.join(' ')}`;
   console.log(`Install peer dependencies for ${project}: ${command}.`);
-  execSync(command, { stdio: 'inherit' });
+  execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
 }
