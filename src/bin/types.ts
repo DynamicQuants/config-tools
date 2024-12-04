@@ -9,12 +9,22 @@
 /**
  * The command target.
  */
-export const CommandTarget = {
+export const ProjectTarget = {
   nextjs: 'nextjs',
   nestjs: 'nestjs',
 } as const;
 
-export type CommandTarget = (typeof CommandTarget)[keyof typeof CommandTarget];
+export type ProjectTarget = (typeof ProjectTarget)[keyof typeof ProjectTarget];
+
+/**
+ * The project type.
+ */
+export const ProjectType = {
+  lib: 'lib',
+  app: 'app',
+} as const;
+
+export type ProjectType = (typeof ProjectType)[keyof typeof ProjectType];
 
 /**
  * The package manager.
@@ -27,5 +37,6 @@ export type PackageManager = 'yarn' | 'pnpm' | 'npm';
 export type MonorepoTargets = {
   name: string;
   path: string;
-  target: CommandTarget;
+  target: ProjectTarget;
+  type: ProjectType;
 };

@@ -13,14 +13,19 @@ import { resolve } from 'path';
 import semver from 'semver';
 import { parse } from 'yaml';
 
-import { type CommandTarget, MonorepoTargets, type PackageManager } from './types';
+import { MonorepoTargets, type PackageManager, ProjectTarget, ProjectType } from './types';
 
 /**
  * The user root path.
  */
-export const rootPath = findRoot(resolve(process.cwd(), '../'));
+export const rootPath: string = findRoot(resolve(process.cwd(), '../'));
 
-function getPackageJson(path: string) {
+/**
+ * Get the package.json file.
+ * @param {string} path - The path to the package.json file.
+ * @returns {Object} The package.json file.
+ */
+function getPackageJson(path: string): Record<string, any> {
   return JSON.parse(readFileSync(resolve(path, 'package.json'), 'utf8')) ?? {};
 }
 
@@ -58,16 +63,20 @@ export function getCurrentPackageVersion(): string {
  * @param {string} target - The target to read the peer dependencies from.
  * @returns {Object} The peer dependencies.
  */
-export function readPeerDependencies(target: CommandTarget): Record<string, string> {
+export function readPeerDependencies(
+  target: ProjectTarget,
+  type: ProjectType,
+): Record<string, string> {
   const peerDependencies = JSON.parse(readFileSync(resolve(__dirname, 'peers.json'), 'utf8'));
-  return peerDependencies[target];
+  return peerDependencies[`${target}-${type}`];
 }
 
 /**
  * Get the target based on the existence of the next.config.ts file.
- * @returns {CommandTarget} The target.
+ * @param {string} targetPath - The path to the target directory.
+ * @returns {ProjectTarget | null} The target.
  */
-export function getTarget(targetPath = rootPath): CommandTarget | null {
+export function getProjectTarget(targetPath: string = rootPath): ProjectTarget {
   // Check if the next.config.ts file exists.
   const nextConfigFiles = ['next.config.ts', 'next.config.js', 'next.config.mjs'];
   if (nextConfigFiles.some((file) => existsSync(resolve(targetPath, file)))) {
@@ -79,8 +88,42 @@ export function getTarget(targetPath = rootPath): CommandTarget | null {
     return 'nestjs';
   }
 
+  // Check if have metadata in json file.
+  if (existsSync(resolve(targetPath, 'package.json'))) {
+    const packageJson = getPackageJson(targetPath);
+    const configTools = packageJson['config-tools'];
+
+    const isValidTarget =
+      configTools &&
+      configTools.target &&
+      Object.values(ProjectTarget).includes(configTools.target);
+
+    if (isValidTarget) {
+      return configTools.target as ProjectTarget;
+    }
+  }
+
   // If none of the above files exist, return null.
-  return null;
+  throw new Error('No project target found, can not configure project.');
+}
+
+/**
+ * Get the project type based on the existence of the config-tools metadata in the package.json file.
+ * @param {string} targetPath - The path to the target directory.
+ * @returns {ProjectType | null} The project type.
+ */
+export function getProjectType(targetPath: string = rootPath): ProjectType {
+  const packageJson = getPackageJson(targetPath);
+  const configTools = packageJson['config-tools'];
+
+  const isValidType =
+    configTools && configTools.type && Object.values(ProjectType).includes(configTools.type);
+
+  if (!isValidType) {
+    throw new Error('No project type found, can not configure project.');
+  }
+
+  return configTools.type as ProjectType;
 }
 
 /**
@@ -93,8 +136,7 @@ export function isMonorepo(): boolean {
 
 /**
  * Get the monorepo targets based on workspace configuration.
- * @param {string[]} patterns - The patterns of the folders to explore.
- * @returns {MonorepoTargets[]} - An array with the paths of the directories that contain package.json.
+ * @returns {MonorepoTargets[]} - An array with the paths of the directories of monorepo projects.
  */
 export function monorepoTargets(): MonorepoTargets[] {
   const directoriesWithPackageJson: MonorepoTargets[] = [];
@@ -111,13 +153,15 @@ export function monorepoTargets(): MonorepoTargets[] {
       const packageJsonPath = resolve(path, 'package.json');
       if (existsSync(packageJsonPath)) {
         const packageJson = getPackageJson(path);
-        const target = getTarget(path);
+        const target = getProjectTarget(path);
+        const type = getProjectType(path);
         const name = packageJson.name;
         if (name && target) {
           directoriesWithPackageJson.push({
             name: `./${pattern.replace('*', name)}`,
             path,
             target,
+            type,
           });
         }
       }
@@ -153,9 +197,14 @@ export function filterPeerDependencies(
  * Install peer dependencies for the given target.
  * @param {CommandTarget} target - The target to install peer dependencies for.
  */
-export function installPeers(target: CommandTarget, path = rootPath, filter = '') {
-  const peerDependencies = filterPeerDependencies(path, readPeerDependencies(target));
-  const project = `${target} ${filter ? `in ${filter}` : ''}`;
+export function installPeers(
+  target: ProjectTarget,
+  type: ProjectType,
+  path = rootPath,
+  filter = '',
+) {
+  const peerDependencies = filterPeerDependencies(path, readPeerDependencies(target, type));
+  const project = `${target}-${type} ${filter ? `in ${filter}` : ''}`.trim();
 
   // If monorepo, we need to filter the dependencies by the workspace.
   let filterCommand = '';
@@ -164,7 +213,7 @@ export function installPeers(target: CommandTarget, path = rootPath, filter = ''
   }
 
   if (Object.keys(peerDependencies).length === 0) {
-    console.log(`No peer dependencies to install for ${project}.`);
+    console.log(`No peer dependencies to install for ${project}`);
     return;
   }
 

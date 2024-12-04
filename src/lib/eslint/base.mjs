@@ -19,4 +19,10 @@ export default [
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {},
   },
+  {
+    files: ['**/*.json'],
+    languageOptions: {
+      parser: require('jsonc-eslint-parser'),
+    },
+  },
 ];
