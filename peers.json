@@ -1,5 +1,5 @@
 {
-  "nextjs": {
+  "nextjs-app": {
     "@playwright/test": "^1.49.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
