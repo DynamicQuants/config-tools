@@ -20,18 +20,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "${configDir}/next-env.d.ts",
-    "${configDir}/**/*.ts",
-    "${configDir}/**/*.tsx",
-    "${configDir}/types.d.ts",
-    "${configDir}/.next/types/**/*.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "jest.config.ts",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "files": [],
+  "include": []
 }

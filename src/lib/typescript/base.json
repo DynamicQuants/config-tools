@@ -15,5 +15,5 @@
     "baseUrl": "${configDir}",
     "outDir": "${configDir}/dist"
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "dist"]
 }
