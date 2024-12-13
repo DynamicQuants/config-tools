@@ -1,7 +1,6 @@
-/**
- * @type {import('prettier').Config}
- */
-const config = {
+import { Config } from 'prettier';
+
+const config: Config = {
   singleQuote: true,
   semi: true,
   trailingComma: 'all',

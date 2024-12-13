@@ -1,4 +1,5 @@
 import type { Config } from 'jest';
+import path from 'node:path';
 
 import base from './base';
 
@@ -16,6 +17,8 @@ const config: Config = {
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  snapshotResolver: path.resolve(__dirname, './snapshotResolver.js'),
+  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx'],
 };
 
 export default config;

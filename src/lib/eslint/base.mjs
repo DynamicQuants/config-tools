@@ -1,4 +1,5 @@
 import nx from '@nx/eslint-plugin';
+import jsonc from 'jsonc-eslint-parser';
 
 /**
  * @type {import('@eslint/eslintrc').Config[]}
@@ -22,7 +23,7 @@ export default [
   {
     files: ['**/*.json'],
     languageOptions: {
-      parser: require('jsonc-eslint-parser'),
+      parser: jsonc,
     },
   },
 ];
