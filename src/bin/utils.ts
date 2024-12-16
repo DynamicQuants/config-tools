@@ -18,7 +18,30 @@ import { MonorepoTargets, type PackageManager, ProjectTarget, ProjectType } from
 /**
  * The user root path.
  */
-export const rootPath: string = findRoot(resolve(process.cwd(), '../'));
+export const rootPath: string = getRootPath();
+
+/**
+ * Check if the project is a monorepo.
+ * @returns {boolean} Whether the project is a monorepo.
+ */
+export function isMonorepo(): boolean {
+  return existsSync(resolve(process.cwd(), 'pnpm-workspace.yaml'));
+}
+
+/**
+ * Get the root path of the project.
+ * @returns {string} The root path of the project.
+ */
+export function getRootPath(): string {
+  if (!isMonorepo()) {
+    const packageJson = getPackageJson(process.cwd());
+    if (packageJson.name !== '@dynamic-quants/config-tools') {
+      return findRoot(process.cwd());
+    }
+  }
+
+  return findRoot(resolve(process.cwd(), '../'));
+}
 
 /**
  * Get the package.json file.
@@ -26,7 +49,13 @@ export const rootPath: string = findRoot(resolve(process.cwd(), '../'));
  * @returns {Object} The package.json file.
  */
 function getPackageJson(path: string): Record<string, any> {
-  return JSON.parse(readFileSync(resolve(path, 'package.json'), 'utf8')) ?? {};
+  const packageJson = JSON.parse(readFileSync(resolve(path, 'package.json'), 'utf8'));
+
+  if (!packageJson) {
+    throw new Error(`No package.json found in ${path}.`);
+  }
+
+  return packageJson;
 }
 
 /**
@@ -51,11 +80,11 @@ export function detectPackageManager(): PackageManager {
 
 /**
  * Get the current package version.
- * @returns {string} The current package version.
+ * @returns {Object} The current package version and name.
  */
-export function getCurrentPackageVersion(): string {
-  const packageJson = getPackageJson(__dirname);
-  return `${packageJson.name}@${packageJson.version}`;
+export function getCurrentPackageVersion(): { name: string; version: string } {
+  const packageJson = getPackageJson(findRoot(__dirname));
+  return { name: packageJson.name, version: packageJson.version };
 }
 
 /**
@@ -127,14 +156,6 @@ export function getProjectType(targetPath: string = rootPath): ProjectType {
 }
 
 /**
- * Check if the project is a monorepo.
- * @returns {boolean} Whether the project is a monorepo.
- */
-export function isMonorepo(): boolean {
-  return existsSync(resolve(rootPath, 'pnpm-workspace.yaml'));
-}
-
-/**
  * Get the monorepo targets based on workspace configuration.
  * @returns {MonorepoTargets[]} - An array with the paths of the directories of monorepo projects.
  */
@@ -184,13 +205,37 @@ export function filterPeerDependencies(
   const packageJson = getPackageJson(path);
   const packagePeers = packageJson.devDependencies ?? {};
 
-  // Checking not installed peer dependencies.
   // The version package.json must satisfy the version in the peers.json.
-  const filteredPeers = Object.entries(targetPeers).filter(
-    ([name, version]) => !packagePeers[name] || semver.satisfies(packagePeers[name], version),
-  );
+  console.log(`📦 Checking peer dependencies for project ${packageJson.name}: \n`);
+  const filteredPeers = Object.entries(targetPeers).filter(([name, version]) => {
+    const installedVersion = packagePeers[name] ?? '';
+    const cleanInstalledVersion = installedVersion.replace(/[\^~]/, '');
+    const mustInstall = !semver.satisfies(cleanInstalledVersion, version);
+
+    const logStatus = !mustInstall
+      ? '\x1b[32m Already installed \x1b[0m ✅'
+      : installedVersion !== ''
+        ? `\x1b[33m Needs update (${installedVersion}) \x1b[0m 🔄`
+        : '\x1b[31m Not found \x1b[0m 🚫';
+
+    console.log(`- \x1b[36m ${name}@${version} \x1b[0m - ${logStatus}`);
+
+    return mustInstall;
+  });
 
   return Object.fromEntries(filteredPeers);
+}
+
+/**
+ * Check if there is a new version of the config tools package.
+ * @returns {boolean} Whether there is a new version of the config tools package.
+ */
+export function checkForUpdates(): { isNewVersionAvailable: boolean; latestVersion: string } {
+  const latestVersion = execSync('pnpm info @dynamic-quants/config-tools version')
+    .toString()
+    .trim();
+  const currentVersion = getCurrentPackageVersion().version;
+  return { isNewVersionAvailable: semver.gt(latestVersion, currentVersion), latestVersion };
 }
 
 /**
@@ -219,7 +264,45 @@ export function installPeers(
 
   const packageManager = detectPackageManager();
   const deps = Object.entries(peerDependencies).map(([name, version]) => `${name}@${version}`);
-  const command = `${packageManager} add -D ${filterCommand} --ignore-scripts ${deps.join(' ')}`;
-  console.log(`Install peer dependencies for ${project}: ${command}.`);
+  const command = `${packageManager} add -D ${filterCommand} ${deps.join(' ')}`;
+  console.log(`\n✨ Installing peer dependencies for ${project}: ${command}.`);
   execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
+}
+
+/**
+ * Upgrade the config tools package to the latest version.
+ */
+export function upgradeConfigToolsPackage() {
+  const packageManager = detectPackageManager();
+  const command = `${packageManager} install @dynamic-quants/config-tools@latest`;
+  console.log(`Upgrade config tools package: ${command}.`);
+  execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
+}
+
+/**
+ * Get the project status.
+ * @returns {Object} The project status.
+ */
+export function getProjectStatus(): {
+  isUpToDate: boolean;
+  isMonorepo: boolean;
+  projectTarget: ProjectTarget;
+  projectType: ProjectType;
+  installedVersion: string;
+  latestVersion: string;
+  packageManager: PackageManager;
+} {
+  const { isNewVersionAvailable, latestVersion } = checkForUpdates();
+  const installedVersion = getCurrentPackageVersion().version;
+  const packageManager = detectPackageManager();
+
+  return {
+    isUpToDate: !isNewVersionAvailable,
+    isMonorepo: isMonorepo(),
+    projectTarget: getProjectTarget(),
+    projectType: getProjectType(),
+    installedVersion,
+    latestVersion,
+    packageManager,
+  };
 }

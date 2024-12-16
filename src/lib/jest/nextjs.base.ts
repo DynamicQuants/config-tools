@@ -5,7 +5,7 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
-  coveragePathIgnorePatterns: ['index.ts', 'server.ts', '.*stories.tsx', 'layout.tsx'],
+  coveragePathIgnorePatterns: ['index.ts$', 'server.ts$', 'layout.tsx$', '.*stories.tsx'],
   snapshotResolver: path.resolve(__dirname, './snapshotResolver.js'),
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx'],
 };

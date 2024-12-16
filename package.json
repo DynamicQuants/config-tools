@@ -1,6 +1,6 @@
 {
   "name": "@dynamic-quants/config-tools",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Configurations for tools used by the Dynamic Quants Team",
   "author": "Dynamic Quants",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "url": "https://github.com/DynamicQuants/config-tools.git"
   },
   "bin": {
-    "@dynamic-quants/config-tools": "./bin/postinstall.mjs"
+    "@dynamic-quants/config-tools": "./bin/main.mjs"
   },
   "exports": {
     "./eslint": {
@@ -36,7 +36,7 @@
       "import": "./lib/tailwind.mjs",
       "require": "./lib/tailwind.js"
     },
-    "./typescript/*.json": "./typescript/*.json"
+    "./tsconfig/*.json": "./tsconfig/*.json"
   },
   "typesVersions": {
     "*": {
@@ -63,13 +63,13 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
-    "cp": "copyfiles -f ./src/lib/typescript/*.json ./dist/typescript && copyfiles -f ./src/lib/jest/snapshotResolver.js ./dist/lib && copyfiles -f ./package.json ./README.md ./LICENSE ./dist && copyfiles -f ./src/bin/peers.json ./dist/bin",
-    "build": "tsup",
-    "postinstall": "node ./bin/postinstall.mjs"
+    "cp": "copyfiles -f ./src/lib/tsconfig/*.json ./dist/tsconfig && copyfiles -f ./src/lib/jest/snapshotResolver.js ./dist/lib && copyfiles -f ./package.json ./README.md ./LICENSE ./dist && copyfiles -f ./src/bin/peers.json ./dist/bin",
+    "build": "tsup"
   },
   "dependencies": {
     "find-root": "^1.1.0",
     "glob": "^11.0.0",
+    "inquirer": "^12.2.0",
     "semver": "^7.6.3",
     "tsup": "^8.3.5",
     "yaml": "^2.6.1"
@@ -103,7 +103,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.6.3",
     "typescript-eslint": "^8.16.0",
-    "vite": "^5.0.0",
+    "vite": "^5.4.11",
     "vite-plugin-dts": "~4.3.0",
     "vitest": "^2.1.8"
   },
@@ -133,7 +133,7 @@
     "ts-node": "^10.9.2",
     "typescript": "5.6.3",
     "typescript-eslint": "^8.16.0",
-    "vite": "^5.0.0",
+    "vite": "^5.4.11",
     "vite-plugin-dts": "~4.3.0",
     "vitest": "^2.1.8"
   },

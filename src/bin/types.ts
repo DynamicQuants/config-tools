@@ -7,6 +7,18 @@
  */
 
 /**
+ * The command name supported by the package.
+ */
+export const CommandName = {
+  help: 'help',
+  info: 'info',
+  upgrade: 'upgrade',
+  setup: 'setup',
+} as const;
+
+export type CommandName = (typeof CommandName)[keyof typeof CommandName];
+
+/**
  * The command target.
  */
 export const ProjectTarget = {

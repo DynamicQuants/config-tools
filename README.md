@@ -16,8 +16,7 @@ This package contains the following configurations focused on applications and l
 - Playwright: A framework for browser automation and testing.
 - Prettier: A code formatter for JavaScript.
 - Tailwind: A utility-first CSS framework for rapidly building custom designs.
-
-You can visit this [Repository](https://github.com/DynamicQuants/moonrepo-templates) to see how to use the configurations in a project.
+- Vite: A build tool for modern web development.
 
 ## 🔌 Installation
 
@@ -31,15 +30,54 @@ pnpm install @dynamic-quants/config-tools@latest
 
 The usage is very simple and straightforward. You just need to extend the configurations in your project.
 
+1. After installing the package, add the `install` script to your `package.json` file. This script will install the required dependencies for the project. Also checks for the latest version of the package and upgrades it if necessary.
+
+```json
+"scripts": {
+  "install": "npx @dynamic-quants/config-tools@latest setup"
+}
+```
+
+2. Add the necessary configurations to your project. For example, if you are using NextJS library, you can add the following to your `package.json` file:
+
+```json
+{
+  "config-tools": {
+    "target": "nextjs",
+    "type": "lib"
+  }
+}
+```
+
+The possible values for `target` are `nextjs` and `nestjs`. The possible values for `type` are `lib` and `app`.
+
+## 🔧 Configurations Presets
+
+For now the presets must be imported manually.
+
+You can visit this [Repository](https://github.com/DynamicQuants/moonrepo-templates) to see how to use the configurations in a project.
+
 ### 🚫 ESLint
 
-Soon...
+Create a `eslint.config.ts` file in the root of your project and import the preset and extend it.
+
+```ts
+// Using the NextJS Library preset.
+import { eslintNextjsLib } from '@dynamic-quants/config-tools/eslint';
+
+export default {
+  ...eslintNextjsLib,
+  {
+    // Your custom configurations.
+  }
+};
+```
 
 ### 🧪 Jest
 
 Soon...
 
-### 📝 TypeScript (TSConfig)
+### 📝 TSConfig
 
 Soon...
 
@@ -55,6 +93,6 @@ Soon...
 
 Soon...
 
-### NextJS
+### 🧪 Vite
 
 Soon...
