@@ -8,6 +8,7 @@ const base: Config = {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   coverageReporters: ['text', 'html'],
+  watchman: false,
 };
 
 export default base;
