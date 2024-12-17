@@ -59,7 +59,8 @@ function getPackageJson(path: string): Record<string, any> {
 }
 
 /**
- * Detects the package manager used in the project.
+ * Detects the package manager used in the project. If it is not possible to detect,
+ * it returns `pnpm`.
  * @returns {PackageManager} The package manager.
  */
 export function detectPackageManager(): PackageManager {
@@ -75,7 +76,8 @@ export function detectPackageManager(): PackageManager {
   if (existsSync(resolve(rootPath, 'package-lock.json'))) return 'npm';
 
   // PNPM by default.
-  throw new Error('Could not detect package manager');
+  console.warn('Could not detect package manager, using PNPM by default.');
+  return 'pnpm';
 }
 
 /**
