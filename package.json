@@ -4,6 +4,20 @@
   "description": "Configurations for tools used by the Dynamic Quants Team",
   "author": "Dynamic Quants",
   "license": "MIT",
+  "keywords": [
+    "config",
+    "tools",
+    "eslint",
+    "jest",
+    "playwright",
+    "prettier",
+    "vite",
+    "tailwind",
+    "nextjs",
+    "react",
+    "typescript",
+    "nestjs"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/DynamicQuants/config-tools.git"
