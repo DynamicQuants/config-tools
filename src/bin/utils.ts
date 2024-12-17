@@ -274,8 +274,8 @@ export function installPeers(
  */
 export function upgradeConfigToolsPackage() {
   const packageManager = detectPackageManager();
-  const command = `${packageManager} install @dynamic-quants/config-tools@latest`;
-  console.log(`Upgrade config tools package: ${command}.`);
+  const command = `${packageManager} install -D @dynamic-quants/config-tools@latest`;
+  console.log(`\x1b[33mRunning: ${command}\x1b[0m`);
   execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
 }
 

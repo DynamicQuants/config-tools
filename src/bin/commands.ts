@@ -16,6 +16,7 @@ import {
   installPeers,
   isMonorepo,
   monorepoTargets,
+  upgradeConfigToolsPackage,
 } from './utils';
 
 /**
@@ -27,7 +28,8 @@ export function setup() {
 
   if (isNewVersionAvailable) {
     console.info(
-      `\x1b[33mNew version available: ${latestVersion}. Run ${CommandName.upgrade} to upgrade.\x1b[0m`,
+      `\x1b[33mNew version available: ${latestVersion}\x1b[0m`,
+      `\x1b[33mTo upgrade, run: pnpm config-tools ${CommandName.upgrade}\x1b[0m`,
     );
   }
 
@@ -73,8 +75,7 @@ export async function upgradeCommand() {
 
     if (answer.upgrade) {
       console.log(`\x1b[33mUpgrading to the latest version: ${latestVersion}\x1b[0m`);
-    } else {
-      console.log(`Skipping upgrade`);
+      upgradeConfigToolsPackage();
     }
   } else {
     console.log(`\x1b[33mNo updates available\x1b[0m`);
