@@ -28,14 +28,20 @@ const { rootPath } = getProjectInfo();
 function getProjectInfo(): ProjectInfo {
   const rootPath = findRoot(resolve(process.cwd(), '../'));
   const projectPath = findRoot(resolve(process.cwd()));
-
   const isMonorepo = existsSync(resolve(rootPath, 'pnpm-workspace.yaml'));
-
   const name = getPackageJson(projectPath).name;
   const target = getProjectTarget(projectPath);
   const type = getProjectType(projectPath);
 
-  return { isMonorepo, rootPath, projectPath, name, target, type };
+  return {
+    isMonorepo,
+    // If it is not a monorepo, the root path is the project path, because the project is the root.
+    rootPath: isMonorepo ? rootPath : projectPath,
+    projectPath,
+    name,
+    target,
+    type,
+  };
 }
 
 /**
