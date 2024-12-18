@@ -44,11 +44,23 @@ export type ProjectType = (typeof ProjectType)[keyof typeof ProjectType];
 export type PackageManager = 'yarn' | 'pnpm' | 'npm';
 
 /**
- * A monorepo project target.
+ * The project information necessary to run config-tools commands.
  */
-export type MonorepoTargets = {
+export type ProjectInfo = {
+  isMonorepo: boolean;
+  rootPath: string;
+  projectPath: string;
   name: string;
-  path: string;
   target: ProjectTarget;
   type: ProjectType;
+};
+
+/**
+ * Project information and the current status of the project related to the config-tools package.
+ */
+export type ProjectStatus = ProjectInfo & {
+  isUpToDate: boolean;
+  installedVersion: string;
+  latestVersion: string;
+  packageManager: PackageManager;
 };

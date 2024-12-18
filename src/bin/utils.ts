@@ -7,40 +7,35 @@
  */
 import findRoot from 'find-root';
 import { existsSync, readFileSync } from 'fs';
-import { sync } from 'glob';
 import { execSync } from 'node:child_process';
 import { resolve } from 'path';
 import semver from 'semver';
-import { parse } from 'yaml';
 
-import { MonorepoTargets, type PackageManager, ProjectTarget, ProjectType } from './types';
+import {
+  type PackageManager,
+  type ProjectInfo,
+  ProjectStatus,
+  ProjectTarget,
+  ProjectType,
+} from './types';
 
-/**
- * The user root path.
- */
-export const rootPath: string = getRootPath();
-
-/**
- * Check if the project is a monorepo.
- * @returns {boolean} Whether the project is a monorepo.
- */
-export function isMonorepo(): boolean {
-  return existsSync(resolve(process.cwd(), 'pnpm-workspace.yaml'));
-}
+const { rootPath } = getProjectInfo();
 
 /**
- * Get the root path of the project.
- * @returns {string} The root path of the project.
+ * Get the project information.
+ * @returns {Object} The project information.
  */
-export function getRootPath(): string {
-  if (!isMonorepo()) {
-    const packageJson = getPackageJson(process.cwd());
-    if (packageJson.name !== '@dynamic-quants/config-tools') {
-      return findRoot(process.cwd());
-    }
-  }
+function getProjectInfo(): ProjectInfo {
+  const rootPath = findRoot(resolve(process.cwd(), '../'));
+  const projectPath = findRoot(resolve(process.cwd()));
 
-  return findRoot(resolve(process.cwd(), '../'));
+  const isMonorepo = existsSync(resolve(rootPath, 'pnpm-workspace.yaml'));
+
+  const name = getPackageJson(projectPath).name;
+  const target = getProjectTarget(projectPath);
+  const type = getProjectType(projectPath);
+
+  return { isMonorepo, rootPath, projectPath, name, target, type };
 }
 
 /**
@@ -63,7 +58,8 @@ function getPackageJson(path: string): Record<string, any> {
  * it returns `pnpm`.
  * @returns {PackageManager} The package manager.
  */
-export function detectPackageManager(): PackageManager {
+function detectPackageManager(): PackageManager {
+  const { rootPath } = getProjectInfo();
   const packageJson = getPackageJson(rootPath);
 
   if (packageJson.packageManager) {
@@ -84,7 +80,7 @@ export function detectPackageManager(): PackageManager {
  * Get the current package version.
  * @returns {Object} The current package version and name.
  */
-export function getCurrentPackageVersion(): { name: string; version: string } {
+function getCurrentPackageVersion(): { name: string; version: string } {
   const packageJson = getPackageJson(findRoot(__dirname));
   return { name: packageJson.name, version: packageJson.version };
 }
@@ -94,10 +90,7 @@ export function getCurrentPackageVersion(): { name: string; version: string } {
  * @param {string} target - The target to read the peer dependencies from.
  * @returns {Object} The peer dependencies.
  */
-export function readPeerDependencies(
-  target: ProjectTarget,
-  type: ProjectType,
-): Record<string, string> {
+function readPeerDependencies(target: ProjectTarget, type: ProjectType): Record<string, string> {
   const peerDependencies = JSON.parse(readFileSync(resolve(__dirname, 'peers.json'), 'utf8'));
   return peerDependencies[`${target}-${type}`];
 }
@@ -107,7 +100,7 @@ export function readPeerDependencies(
  * @param {string} targetPath - The path to the target directory.
  * @returns {ProjectTarget | null} The target.
  */
-export function getProjectTarget(targetPath: string = rootPath): ProjectTarget {
+function getProjectTarget(targetPath: string): ProjectTarget {
   // Check if the next.config.ts file exists.
   const nextConfigFiles = ['next.config.ts', 'next.config.js', 'next.config.mjs'];
   if (nextConfigFiles.some((file) => existsSync(resolve(targetPath, file)))) {
@@ -143,7 +136,7 @@ export function getProjectTarget(targetPath: string = rootPath): ProjectTarget {
  * @param {string} targetPath - The path to the target directory.
  * @returns {ProjectType | null} The project type.
  */
-export function getProjectType(targetPath: string = rootPath): ProjectType {
+function getProjectType(targetPath: string): ProjectType {
   const packageJson = getPackageJson(targetPath);
   const configTools = packageJson['config-tools'];
 
@@ -158,49 +151,12 @@ export function getProjectType(targetPath: string = rootPath): ProjectType {
 }
 
 /**
- * Get the monorepo targets based on workspace configuration.
- * @returns {MonorepoTargets[]} - An array with the paths of the directories of monorepo projects.
- */
-export function monorepoTargets(): MonorepoTargets[] {
-  const directoriesWithPackageJson: MonorepoTargets[] = [];
-
-  const workspace = readFileSync(resolve(rootPath, 'pnpm-workspace.yaml'), 'utf8');
-  const workspaceData = parse(workspace);
-  const patterns = (workspaceData.packages as string[]) ?? [];
-
-  patterns.forEach((pattern) => {
-    const fullPattern = resolve(rootPath, pattern);
-    const directories = sync(fullPattern, { nodir: false });
-
-    directories.forEach((path) => {
-      const packageJsonPath = resolve(path, 'package.json');
-      if (existsSync(packageJsonPath)) {
-        const packageJson = getPackageJson(path);
-        const target = getProjectTarget(path);
-        const type = getProjectType(path);
-        const name = packageJson.name;
-        if (name && target) {
-          directoriesWithPackageJson.push({
-            name: `./${pattern.replace('*', name)}`,
-            path,
-            target,
-            type,
-          });
-        }
-      }
-    });
-  });
-
-  return directoriesWithPackageJson;
-}
-
-/**
  * Filter peer dependencies that are not installed.
  * @param {string} path - The path to the package.json file.
  * @param {Record<string, string>} targetPeers - The peer dependencies to filter.
  * @returns {Record<string, string>} The filtered peer dependencies.
  */
-export function filterPeerDependencies(
+function filterPeerDependencies(
   path: string,
   targetPeers: Record<string, string>,
 ): Record<string, string> {
@@ -244,19 +200,15 @@ export function checkForUpdates(): { isNewVersionAvailable: boolean; latestVersi
  * Install peer dependencies for the given target.
  * @param {CommandTarget} target - The target to install peer dependencies for.
  */
-export function installPeers(
-  target: ProjectTarget,
-  type: ProjectType,
-  path = rootPath,
-  filter = '',
-) {
-  const peerDependencies = filterPeerDependencies(path, readPeerDependencies(target, type));
-  const project = `${target}-${type} ${filter ? `in ${filter}` : ''}`.trim();
+export function installPeers() {
+  const { target, type, isMonorepo, name, projectPath } = getProjectInfo();
+  const peerDependencies = filterPeerDependencies(projectPath, readPeerDependencies(target, type));
+  const project = `${target}-${type} ${isMonorepo ? `in ${name}` : ''}`.trim();
 
   // If monorepo, we need to filter the dependencies by the workspace.
   let filterCommand = '';
-  if (filter.length > 0) {
-    filterCommand = `--filter="${filter}"`;
+  if (isMonorepo) {
+    filterCommand = `--filter="${name}"`;
   }
 
   if (Object.keys(peerDependencies).length === 0) {
@@ -266,7 +218,7 @@ export function installPeers(
 
   const packageManager = detectPackageManager();
   const deps = Object.entries(peerDependencies).map(([name, version]) => `${name}@${version}`);
-  const command = `${packageManager} add -D ${filterCommand} ${deps.join(' ')}`;
+  const command = `${packageManager} add -D --ignore-scripts ${filterCommand} ${deps.join(' ')}`;
   console.log(`\n✨ Installing peer dependencies for ${project}: ${command}.`);
   execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
 }
@@ -274,37 +226,28 @@ export function installPeers(
 /**
  * Upgrade the config tools package to the latest version.
  */
-export function upgradeConfigToolsPackage() {
+export function upgradeConfigTools() {
   const packageManager = detectPackageManager();
   const command = `${packageManager} install -D @dynamic-quants/config-tools@latest`;
-  console.log(`\x1b[33mRunning: ${command}\x1b[0m`);
   execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
+  console.log('\x1b[32m🎉 Config tools upgraded successfully\x1b[0m');
 }
 
 /**
  * Get the project status.
  * @returns {Object} The project status.
  */
-export function getProjectStatus(): {
-  isUpToDate: boolean;
-  isMonorepo: boolean;
-  projectTarget: ProjectTarget;
-  projectType: ProjectType;
-  installedVersion: string;
-  latestVersion: string;
-  packageManager: PackageManager;
-} {
+export function getProjectStatus(): ProjectStatus {
   const { isNewVersionAvailable, latestVersion } = checkForUpdates();
   const installedVersion = getCurrentPackageVersion().version;
   const packageManager = detectPackageManager();
+  const projectInfo = getProjectInfo();
 
   return {
     isUpToDate: !isNewVersionAvailable,
-    isMonorepo: isMonorepo(),
-    projectTarget: getProjectTarget(),
-    projectType: getProjectType(),
     installedVersion,
     latestVersion,
     packageManager,
+    ...projectInfo,
   };
 }

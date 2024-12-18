@@ -7,17 +7,8 @@
  */
 import inquirer from 'inquirer';
 
-import { CommandName, ProjectTarget } from './types';
-import {
-  checkForUpdates,
-  getProjectStatus,
-  getProjectTarget,
-  getProjectType,
-  installPeers,
-  isMonorepo,
-  monorepoTargets,
-  upgradeConfigToolsPackage,
-} from './utils';
+import { CommandName } from './types';
+import { checkForUpdates, getProjectStatus, installPeers, upgradeConfigTools } from './utils';
 
 /**
  * Setup command.
@@ -33,22 +24,7 @@ export function setup() {
     );
   }
 
-  if (isMonorepo()) {
-    monorepoTargets().forEach(({ target, type, path, name }) =>
-      installPeers(target, type, path, name),
-    );
-    return;
-  }
-
-  const target = getProjectTarget();
-  const type = getProjectType();
-
-  if (!target) {
-    console.error(`No target found: values must be ${Object.values(ProjectTarget).join(' | ')}`);
-    return;
-  }
-
-  installPeers(target, type);
+  installPeers();
 }
 
 /**
@@ -56,13 +32,12 @@ export function setup() {
  * It will upgrade the project to the latest version.
  */
 export async function upgradeCommand() {
-  console.log(`Checking for updates...`);
-
+  console.log('♻️ Checking for updates...');
   const { isNewVersionAvailable, latestVersion } = checkForUpdates();
 
   // If the latest version is greater than the current version, we will upgrade the project.
   if (isNewVersionAvailable) {
-    console.log(`Upgrading to the latest version: ${latestVersion}`);
+    console.log(`A new version is available: ${latestVersion}`);
 
     // Asking if user wants to upgrade the project.
     const answer = await inquirer.prompt([
@@ -75,7 +50,7 @@ export async function upgradeCommand() {
 
     if (answer.upgrade) {
       console.log(`\x1b[33mUpgrading to the latest version: ${latestVersion}\x1b[0m`);
-      upgradeConfigToolsPackage();
+      upgradeConfigTools();
     }
   } else {
     console.log(`\x1b[33mNo updates available\x1b[0m`);
@@ -94,14 +69,16 @@ export function helpCommand() {
       ${Object.values(CommandName).join(', ')}
 
     Command Descriptions:
-      ${CommandName.setup}: Installs peer dependencies for the project.
+      ${CommandName.setup}: Installs all dependencies for the project.
+      ${CommandName.info}: Displays information about the project and the config tools package.
       ${CommandName.upgrade}: Upgrades the project to the latest version.
       ${CommandName.help}: Displays help information for the available commands.
 
     Examples:
-      @dynamic-quants/config-tools ${CommandName.setup}
-      @dynamic-quants/config-tools ${CommandName.upgrade}
-      @dynamic-quants/config-tools ${CommandName.help}
+      pnpm config-tools ${CommandName.setup}
+      pnpm config-tools ${CommandName.info}
+      pnpm config-tools ${CommandName.upgrade}
+      pnpm config-tools ${CommandName.help}
   `);
 }
 
@@ -110,22 +87,7 @@ export function helpCommand() {
  * It will show the info about the project and the config tools package.
  */
 export function infoCommand() {
-  const {
-    isUpToDate,
-    isMonorepo,
-    projectTarget,
-    projectType,
-    installedVersion,
-    latestVersion,
-    packageManager,
-  } = getProjectStatus();
-
-  console.log('Dynamic Quants Config Tools');
-  console.log(`Installed version: ${installedVersion}`);
-  console.log(`Latest version: ${latestVersion}`);
-  console.log(`Is up to date: ${isUpToDate}`);
-  console.log(`Is monorepo: ${isMonorepo}`);
-  console.log(`Project target: ${projectTarget}`);
-  console.log(`Project type: ${projectType}`);
-  console.log(`Package Manager: ${packageManager}`);
+  const info = getProjectStatus();
+  console.log('\x1b[33m🚀 Dynamic Quants Config Tools\x1b[0m');
+  console.log(info);
 }
