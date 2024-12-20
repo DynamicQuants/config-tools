@@ -24,6 +24,7 @@ export type CommandName = (typeof CommandName)[keyof typeof CommandName];
 export const ProjectTarget = {
   nextjs: 'nextjs',
   nestjs: 'nestjs',
+  node: 'node',
 } as const;
 
 export type ProjectTarget = (typeof ProjectTarget)[keyof typeof ProjectTarget];
@@ -34,6 +35,7 @@ export type ProjectTarget = (typeof ProjectTarget)[keyof typeof ProjectTarget];
 export const ProjectType = {
   lib: 'lib',
   app: 'app',
+  cli: 'cli',
 } as const;
 
 export type ProjectType = (typeof ProjectType)[keyof typeof ProjectType];
