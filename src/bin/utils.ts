@@ -234,7 +234,15 @@ export function installPeers() {
  */
 export function upgradeConfigTools() {
   const packageManager = detectPackageManager();
-  const command = `${packageManager} install -D @dynamic-quants/config-tools@latest`;
+  const { isMonorepo, name } = getProjectInfo();
+
+  // If monorepo, we need to filter the dependencies by the workspace.
+  let filterCommand = '';
+  if (isMonorepo) {
+    filterCommand = `--filter="${name}"`;
+  }
+
+  const command = `${packageManager} install -D ${filterCommand} @dynamic-quants/config-tools@latest`;
   execSync(`cd ${rootPath} && ${command}`, { stdio: 'inherit' });
   console.log('\x1b[32m🎉 Config tools upgraded successfully\x1b[0m');
 }
