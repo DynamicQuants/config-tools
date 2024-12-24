@@ -1,6 +1,6 @@
 {
   "name": "@dynamic-quants/config-tools",
-  "version": "3.0.16",
+  "version": "3.0.17",
   "description": "Configurations for tools used by the Dynamic Quants Team",
   "author": "Dynamic Quants",
   "license": "MIT",
@@ -78,7 +78,7 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,ts,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,md,json}\"",
-    "cp": "copyfiles -f ./src/lib/tsconfig/*.json ./dist/tsconfig && copyfiles -f ./src/lib/jest/snapshotResolver.js ./dist/lib && copyfiles -f ./package.json ./README.md ./LICENSE ./dist && copyfiles -f ./src/bin/peers.json ./dist/bin",
+    "cp": "copyfiles -f ./src/lib/tsconfig/*.json ./dist/tsconfig && copyfiles -f ./src/lib/jest/snapshotResolver.js ./src/lib/jest/.swcrc ./dist/lib && copyfiles -f ./package.json ./README.md ./LICENSE ./dist && copyfiles -f ./src/bin/peers.json ./dist/bin",
     "build": "tsup"
   },
   "dependencies": {
