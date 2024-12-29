@@ -23,7 +23,13 @@ const config = {
   // To avoid the error: SyntaxError: This experimental syntax requires enabling one of the
   // following parser plugin(s): "decorators", "decorators-legacy".
   // Ref: https://github.com/trivago/prettier-plugin-sort-imports/issues/120#issuecomment-1873414061
-  importOrderParserPlugins: ['typescript', 'jsx', 'decorators'],
+  importOrderParserPlugins: [
+    'typescript',
+    'jsx',
+    'classProperties',
+    // To avoid the error: "SyntaxError: Decorators cannot be used to decorate parameters".
+    'decorators-legacy',
+  ],
 };
 
 export default config;
